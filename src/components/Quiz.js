@@ -1,14 +1,28 @@
 import { QuizContext } from '../contexts/quiz';
 import Question from './Question';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 
 const Quiz = () => {
     const [quizState, dispatch] = useContext(QuizContext);
-//    console.log("quizState", quizState);
+    //    console.log("quizState", quizState);
+    //open trivia API
+    const apiURL = "https://opentdb.com/api.php?amount=10&category=9&type=multiple&encode=url3986"
 
+    useEffect(() => {
+if (quizState.questions.length > 0) {
+    return;
+}
+        //console.log('useEffect on initialize');
+        fetch(apiURL)
+            .then(response => response.json())
+            .then(data => {
+                console.log('data', data);
+                dispatch({type: "LOADED_QUESTIONS", payload: data.results}); 
+            });
+    })
     return (
         <div
-        className="quiz">
+            className="quiz">
             {quizState.showResults && (
                 <div className="results">
                     <div className="congratulations">Congrats!</div>
@@ -16,11 +30,11 @@ const Quiz = () => {
                         <div>You have finished the quiz.</div>
                         <div>You got {quizState.correctAnswerCount} of {quizState.questions.length} questions correct.</div>
                     </div>
-                     <div className="next-button"
+                    <div className="next-button"
                         onClick={() => dispatch({ type: 'RESTART' })}>Restart</div>
                 </div>
             )}
-            {!quizState.showResults && (
+            {!quizState.showResults && quizState.questions.length > 0 && (
                 <div>
                     <div className="score">
                         Question {quizState.currentQuestionIndex + 1}/
