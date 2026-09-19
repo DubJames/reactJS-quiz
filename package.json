@@ -24,6 +24,9 @@
       "react-app/jest"
     ]
   },
+  "homepage":{
+    "https://www.willjames.biz/apps/trivia"
+  },
   "browserslist": {
     "production": [
       ">0.2%",
